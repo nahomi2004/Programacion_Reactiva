@@ -16,4 +16,5 @@ frutasObs.subscribe((frutas) => {
     console.log(`Me llegó una ${frutas}`)
 })
 
-console.log(`Me llegó mi pedido`)
+console.log(`YA RECIBÍ MI PEDIDO`)
+console.log(`Rulay rulay`)
