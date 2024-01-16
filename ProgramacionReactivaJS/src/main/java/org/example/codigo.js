@@ -1,6 +1,6 @@
 const { from, of} = require("rxjs");
 
-const { delay, concatMap } = require("rxjs/operators");
+const { delay, concatMap, filter } = require("rxjs/operators");
 
 const readline = require('readline'); // Leer lo que escriben los usuarios
 
@@ -84,7 +84,7 @@ rl.question(`HOLA CÓMO ESTÁS, QUISIERA MOSTRAR MI CÓDIGO REACTIVO\nESTE PEQUE
 );
 
 const indice = () => {
-    rl.question('¿Qué desea hacer?\nImprimir la lista de estudiantes: [1]\nFiltrar estudiantes por edad: [2]\nSalir: [3]\n', (num) => {
+    rl.question('¿Qué desea hacer?\nImprimir la lista de estudiantes: [1]\nFiltrar estudiantes mayores a 10 años: [2]\nSalir: [3]\n', (num) => {
         const rsta = parseInt(num); // Verificar si lo ingresado es válido
         if (isNaN(rsta)) {
             console.log("Por favor, ingresa un número válido.");
@@ -136,35 +136,21 @@ const imprimirListaEstudiantes = () => {
 };
 
 const estudiantesTalEdad = () => {
-    rl.question('Edad para filtrar:\n', (respuesta) => {
-        const edadFiltro = parseInt(respuesta); // Verificar si lo ingresado es válido
 
-        if (isNaN(edadFiltro)) {
-            console.log("Por favor, ingresa un número válido.");
-            rl.close();
-            return;
-        } // Si no lo es devuelve esto
+    const estFiltrados = from(estudiantes).pipe(
+        filter(estudiantes => estudiantes.edadEst() > 10)
+    );
 
-        const estFiltrados = from(estudiantes).pipe(
-            filter(estudiante => estudiante.edad > edadFiltro)
-        ); // si lo es procede a filtrarse la lista de estudiantes
+    const estObs = estFiltrados.pipe(
+        concatMap((estudiante) => of(estudiante).pipe(delay(1000)))
+    );
 
-        estFiltrados.subscribe(estudiante => {
-            console.log(`Estudiante mayor de ${edadFiltro} años: ${estudiante.nombre}`);
-            console.log(`PROCESO TERMINADO`);
-        }, null, () => rl.close());
-    });
+    console.log(`Estudiante/s mayor/es de 10 años:`)
+    estObs.subscribe(estudiante => {
+        console.log(`Nombre: ${estudiante.nombreCompleto()}    Edad: ${estudiante.edadEst()}`);
+
+    }, console.log(`PROCESO TERMINADO`));
+
 
     console.log(`MENSAJE REACTIVO, ESPERANDO A QUE EL PROCESO TERMINE`);
 };
-
-
-
-/*
-* BORRADOR
-*
-*
-        if (rsta !== "sí" || rsta !== "si" || rsta !== "no") {
-            console.log("LO SIENTO NO PUEDO LEER ESTO")
-        }
-* */
