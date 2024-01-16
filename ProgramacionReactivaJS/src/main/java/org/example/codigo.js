@@ -57,7 +57,63 @@ const estudiantes = [
     new Estudiante("Luis", "Sney", "777777", 13, "La Dolorosa")
 ];
 
-// Observable
+// CÓDIGO
+
+rl.question(`HOLA CÓMO ESTÁS, QUISIERA MOSTRAR MI CÓDIGO REACTIVO\nESTE PEQUEÑO PROYECTO QUIERE DEMOSTRAR CÓMO FUNCIONA LA PROGRAMACIÓN REACTIVA,\nSE MOSTRARÁN MENSAJES MIENTRAS ELIGES LO QUE DESEAS HACER\n¿DESEA CONTINUAR?\n[SÍ] [NO]\n`,
+    (YN) => {
+        const rsta = YN.toLowerCase();
+        switch (rsta) {
+            case "si":
+            case "sí":
+                indice()
+                break;
+
+            case "no":
+                console.log(`Entiendo tu decisión\nTen un lindo día uwu`)
+                process.exit();
+                break;
+
+            default:
+                console.log("LO SIENTO NO PUEDO LEER ESTO")
+                process.exit();
+                break;
+        }
+
+        return;
+    }
+);
+
+const indice = () => {
+    rl.question('¿Qué desea hacer?\nImprimir la lista de estudiantes: [1]\nFiltrar estudiantes por edad: [2]\nSalir: [3]\n', (num) => {
+        const rsta = parseInt(num); // Verificar si lo ingresado es válido
+        if (isNaN(rsta)) {
+            console.log("Por favor, ingresa un número válido.");
+            rl.close();
+            return;
+        } // Si no lo es devuelve esto
+
+        switch (rsta) {
+            case 1:
+                imprimirListaEstudiantes();
+                break;
+            case 2:
+                estudiantesTalEdad();
+                break;
+            case 3:
+                console.log("Hasta luego. ¡Adiós!");
+                process.exit();
+                return;
+
+            default:
+                console.log(`No puedo leer eso\nIntentalo de nuevo\n`);
+                break;
+        }
+        rl.close();
+    });
+    console.log(`¿HOLA CÓMO ESTÁS? ¿QUÉ? ¿AÚN NO DEBÍA SALIR? PERDÓN Y ADIÓS, OLVIDA ESTE MENSAJE`)
+}
+
+// MÉTODOS
 
 const imprimirListaEstudiantes = () => {
     console.log(`LISTA DE ESTUDIANTES`);
@@ -74,18 +130,9 @@ const imprimirListaEstudiantes = () => {
         console.log(`Colegio al que representa: ${estudiante.nombreColegio()}`);
         console.log("---------------------\n");
     });
-};
 
-const agregarEstudiante = () => {
-    const nuevoEstudiante = new Estudiante("Carlos", "Rodriguez", "555555", 14, "Colegio XYZ");
-
-    const estConNuevo = estObs.pipe(
-        concat(of(nuevoEstudiante).pipe(delay(1000)))
-    );
-
-    estConNuevo.subscribe(estudiante => {
-        console.log(`Nuevo estudiante: ${estudiante.nombre}`);
-    });
+    console.log(`ESTE NO ES UN MENSAJE ERROR, ES UN MENSAJE REACTIVO`)
+    console.log(`Perdón Ingeniero, recién estoy aprendiendo`)
 };
 
 const estudiantesTalEdad = () => {
@@ -108,3 +155,13 @@ const estudiantesTalEdad = () => {
         rl.close();
     });
 };
+
+
+/*
+* BORRADOR
+*
+*
+        if (rsta !== "sí" || rsta !== "si" || rsta !== "no") {
+            console.log("LO SIENTO NO PUEDO LEER ESTO")
+        }
+* */
