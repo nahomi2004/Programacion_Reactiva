@@ -136,25 +136,28 @@ const imprimirListaEstudiantes = () => {
 };
 
 const estudiantesTalEdad = () => {
-    rl.question('Edad para filtrar: ', (respuesta) => {
+    rl.question('Edad para filtrar:\n', (respuesta) => {
         const edadFiltro = parseInt(respuesta); // Verificar si lo ingresado es válido
+
         if (isNaN(edadFiltro)) {
             console.log("Por favor, ingresa un número válido.");
             rl.close();
             return;
         } // Si no lo es devuelve esto
 
-        const estFiltrados = estObs.pipe(
+        const estFiltrados = from(estudiantes).pipe(
             filter(estudiante => estudiante.edad > edadFiltro)
         ); // si lo es procede a filtrarse la lista de estudiantes
 
         estFiltrados.subscribe(estudiante => {
             console.log(`Estudiante mayor de ${edadFiltro} años: ${estudiante.nombre}`);
-        });
-
-        rl.close();
+            console.log(`PROCESO TERMINADO`);
+        }, null, () => rl.close());
     });
+
+    console.log(`MENSAJE REACTIVO, ESPERANDO A QUE EL PROCESO TERMINE`);
 };
+
 
 
 /*
