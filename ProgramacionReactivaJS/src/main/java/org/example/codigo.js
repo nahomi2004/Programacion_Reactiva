@@ -136,7 +136,6 @@ const imprimirListaEstudiantes = () => {
 };
 
 const estudiantesTalEdad = () => {
-
     const estFiltrados = from(estudiantes).pipe(
         filter(estudiantes => estudiantes.edadEst() > 10)
     );
@@ -148,9 +147,7 @@ const estudiantesTalEdad = () => {
     console.log(`Estudiante/s mayor/es de 10 años:`)
     estObs.subscribe(estudiante => {
         console.log(`Nombre: ${estudiante.nombreCompleto()}    Edad: ${estudiante.edadEst()}`);
-
-    }, console.log(`PROCESO TERMINADO`));
-
+    });
 
     console.log(`MENSAJE REACTIVO, ESPERANDO A QUE EL PROCESO TERMINE`);
 };
