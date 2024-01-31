@@ -12,54 +12,44 @@ const rl = readline.createInterface({
 // Crear clase estudiante
 
 class Estudiante {
-    constructor(nombre, apellido, cedula, edad, colegio) {
+    constructor(nombre, apellido) {
         this.nombre = nombre;
         this.apellido = apellido;
-        this.cedula = cedula;
-        this.edad = edad;
-        this.colegio = colegio;
-    }
-
-    nombreEst() {
-        return this.nombre;
-    }
-
-    apellidoEst() {
-        return this.apellido;
     }
 
     nombreCompleto() {
         return this.nombre + this.apellido;
     }
+}
 
-    numCedula() {
-        return this.cedula;
+class Docente {
+    constructor(nombre, apellido) {
+        this.nombre = nombre;
+        this.apellido = apellido;
     }
 
-    edadEst() {
-        return this.edad;
-    }
-
-    nombreColegio() {
-        return this.colegio;
+    nombreCompleto() {
+        return this.nombre + this.apellido;
     }
 }
 
 // Lista de Estudiantes
 
-const estudiantes = [
-    new Estudiante("José", "Armijos", "111111", 12, "APC"),
-    new Estudiante("Daniel", "Mendieta", "222222", 11, "APC"),
-    new Estudiante("María", "Marcelido", "333333", 12, "Eugenio Espejo"),
-    new Estudiante("Geovanna", "Vivanco", "444444", 13, "Marianas"),
-    new Estudiante("Ricardo", "Alcaraz", "555555", 12, "La Dolorosa"),
-    new Estudiante("Ariana", "Grande", "666666", 11, "Eugenio Espejo"),
-    new Estudiante("Luis", "Sney", "777777", 13, "La Dolorosa")
+const listEstudiantes = [
+    new Estudiante("Geovanna", "Vivanco"),
+    new Estudiante("Ricardo", "Alcaraz"),
+    new Estudiante("Ariana", "Grande")
+];
+
+const listDocentes = [
+    new Docente("José", "Armijos"),
+    new Docente("Daniel", "Mendieta"),
+    new Docente("María", "Marcelido")
 ];
 
 // CÓDIGO
 
-rl.question(`HOLA CÓMO ESTÁS, QUISIERA MOSTRAR MI CÓDIGO REACTIVO\nESTE PEQUEÑO PROYECTO QUIERE DEMOSTRAR CÓMO FUNCIONA LA PROGRAMACIÓN REACTIVA,\nSE MOSTRARÁN MENSAJES MIENTRAS ELIGES LO QUE DESEAS HACER\n¿DESEA CONTINUAR?\n[SÍ] [NO]\n`,
+/*rl.question(`HOLA CÓMO ESTÁS, QUISIERA MOSTRAR MI CÓDIGO REACTIVO\nESTE PEQUEÑO PROYECTO QUIERE DEMOSTRAR CÓMO FUNCIONA LA PROGRAMACIÓN REACTIVA,\nSE MOSTRARÁN MENSAJES MIENTRAS ELIGES LO QUE DESEAS HACER\n¿DESEA CONTINUAR?\n[SÍ] [NO]\n`,
     (YN) => {
         const rsta = YN.toLowerCase();
         switch (rsta) {
@@ -111,31 +101,27 @@ const indice = () => {
         rl.close();
     });
     console.log(`¿HOLA CÓMO ESTÁS? ¿QUÉ? ¿AÚN NO DEBÍA SALIR? PERDÓN Y ADIÓS, OLVIDA ESTE MENSAJE`)
-}
+}*/
 
 // MÉTODOS
 
-const imprimirListaEstudiantes = () => {
+const imprimirListaEstudiantes = (estudiantes) =>  {
     console.log(`LISTA DE ESTUDIANTES`);
 
     const estObs = from(estudiantes).pipe(
-        concatMap((estudiante) => of(estudiante).pipe(delay(1000)))
+        concatMap((x) => of(x).pipe(delay(1000)))
     );
 
-    estObs.subscribe((estudiante) => {
-        console.log(`Estudiante ${estudiantes.indexOf(estudiante) + 1}`);
-        console.log(`NombreCompleto: ${estudiante.nombreCompleto()}`);
-        console.log(`Cédula: ${estudiante.numCedula()}`);
-        console.log(`Edad: ${estudiante.edadEst()}`);
-        console.log(`Colegio al que representa: ${estudiante.nombreColegio()}`);
+    estObs.subscribe((x) => {
+        console.log(`NombreCompleto: ${x.nombreCompleto()}`);
         console.log("---------------------\n");
     });
 
-    console.log(`ESTE NO ES UN MENSAJE ERROR, ES UN MENSAJE REACTIVO`)
-    console.log(`Perdón Ingeniero, recién estoy aprendiendo`)
+    // console.log(`ESTE NO ES UN MENSAJE ERROR, ES UN MENSAJE REACTIVO`)
+    // console.log(`Perdón Ingeniero, recién estoy aprendiendo`)
 };
 
-const estudiantesTalEdad = () => {
+/* const estudiantesTalEdad = () => {
     const estFiltrados = from(estudiantes).pipe(
         filter(estudiantes => estudiantes.edadEst() > 10)
     );
@@ -150,4 +136,31 @@ const estudiantesTalEdad = () => {
     });
 
     console.log(`MENSAJE REACTIVO, ESPERANDO A QUE EL PROCESO TERMINE`);
+};*/
+
+const patroObserver = (docentes, estudiantes) => {
+    //console.log(`Algo que también es interesante es el patrón observer, pues funciona con Subscribe, Unsubscribe y Notify`)
+    //console.log(`Vamos a ver un poco de eso:`)
+
+    const observables = from(estudiantes).pipe(
+        concatMap((estudiantes) => of(estudiantes).pipe(delay(1000)))
+    );
+
+    observables.subscribe((docentes) => {
+        docentes.nombreCompleto()
+        console.log(`Al estudiante ${estudiantes.nombreCompleto()} se le agregró un profesor supervisor ${docentes.nombreCompleto()}`)
+    });
 };
+
+const ejecutable = () => {
+    console.log(`VAMOS A IMPRIMIR UNA LISTA DE ESTUDIANTES, MIENTRAS SE EJECUTAN OTRAS FUNCIONES`)
+
+    imprimirListaEstudiantes(listEstudiantes)
+
+    console.log(`SEGÚN LO QUE SABEMOS PRIMERO DEBERÍA SALIR LA LISTA DE ESTUDIANTES Y DE AHÍ ESTE MENSAJE`)
+    console.log(`EN PROGRAMACIÓN REACTIVA NO FUNCIONA ASÍ`)
+
+    // patroObserver(listDocentes,listEstudiantes)
+}
+
+ejecutable()
