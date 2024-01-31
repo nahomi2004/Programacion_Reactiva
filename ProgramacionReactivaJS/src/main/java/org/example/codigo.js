@@ -1,4 +1,4 @@
-const { from, of} = require("rxjs");
+const { from, of, zip} = require("rxjs");
 
 const { delay, concatMap, filter } = require("rxjs/operators");
 
@@ -15,6 +15,17 @@ class Estudiante {
     constructor(nombre, apellido) {
         this.nombre = nombre;
         this.apellido = apellido;
+        this.observadores = [];
+    }
+
+    add(observador) {
+        this.observadores.push(observador);
+    }
+
+    notify() {
+        this.observadores.forEach(observador => {
+            observador.update(this);
+        });
     }
 
     nombreCompleto() {
@@ -28,6 +39,9 @@ class Docente {
         this.apellido = apellido;
     }
 
+    update(estudiante) {
+        console.log(`Al estudiante ${estudiante.nombreCompleto()} se le agregó un profesor supervisor ${this.nombreCompleto()}`);
+    }
     nombreCompleto() {
         return this.nombre + this.apellido;
     }
@@ -139,16 +153,18 @@ const imprimirListaEstudiantes = (estudiantes) =>  {
 };*/
 
 const patroObserver = (docentes, estudiantes) => {
-    //console.log(`Algo que también es interesante es el patrón observer, pues funciona con Subscribe, Unsubscribe y Notify`)
-    //console.log(`Vamos a ver un poco de eso:`)
-
+    // Observable de Estudiantes
     const observables = from(estudiantes).pipe(
-        concatMap((estudiantes) => of(estudiantes).pipe(delay(1000)))
+        concatMap((est) => {
+            docentes.forEach(doc => est.add(doc));
+            return of(est).pipe(delay(1000));
+        })
     );
 
-    observables.subscribe((docentes) => {
-        docentes.nombreCompleto()
-        console.log(`Al estudiante ${estudiantes.nombreCompleto()} se le agregró un profesor supervisor ${docentes.nombreCompleto()}`)
+    observables.subscribe((est) => {
+        est.notify();
+    }, null, () => {
+        console.log(`La supervisión de cada profesor está lista.`)
     });
 };
 
@@ -160,7 +176,7 @@ const ejecutable = () => {
     console.log(`SEGÚN LO QUE SABEMOS PRIMERO DEBERÍA SALIR LA LISTA DE ESTUDIANTES Y DE AHÍ ESTE MENSAJE`)
     console.log(`EN PROGRAMACIÓN REACTIVA NO FUNCIONA ASÍ`)
 
-    // patroObserver(listDocentes,listEstudiantes)
+    patroObserver(listDocentes,listEstudiantes)
 }
 
 ejecutable()
