@@ -114,7 +114,7 @@ const ejecutable = () => {
     console.log(`SEGÚN LO QUE SABEMOS PRIMERO DEBERÍA SALIR LA LISTA DE ESTUDIANTES Y DE AHÍ ESTE MENSAJE`)
     console.log(`EN PROGRAMACIÓN REACTIVA NO FUNCIONA ASÍ`)
 
-    patroObserver(listDocentes,listEstudiantes).pipe(delay(50000))
+    patroObserver(listDocentes,listEstudiantes)
 }
 
 // se llama a la función ejecutable
